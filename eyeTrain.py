@@ -66,7 +66,7 @@ class NN(nn.Module):
         ey = nn.ReLU()(self.ey_w1(ey))
         ey = self.dropout4(ey)        
         
-        fc = self.fc_norm1(fc)
+        #fc = self.fc_norm1(fc)
         fc = nn.ReLU()(self.fc_w1(fc))
         fc = self.dropout5(fc)
 
@@ -158,7 +158,7 @@ print("Testing Data %d" % len(testFcData))
 
 start_time = time.time()
 
-for epoch_num in range(100):
+for epoch_num in range(120):
     training_err = 0
     for it in range(0, len(trainData)-len(trainData)%batch_size, batch_size):
         batchData = list(zip(*trainData[it:it+batch_size]))

@@ -87,6 +87,7 @@ for levelOneDir in levelOneViewList:
                     frameTimestamp = row[1]
                     
                     img = cv2.imread(frameFilename, cv2.IMREAD_GRAYSCALE)
+                    imgHeight, imgWidth = img.shape
                     facePos = list()
 
                     # Tobii has been calibrated such that 0,0 is top left and 1,1 is bottom right
@@ -144,6 +145,13 @@ for levelOneDir in levelOneViewList:
                         #cv2.waitKey(0)
                         #print("Duila!")
                         # len of facePos is 76
+                        for i in range(len(facePos)):
+                            if i % 2 == 0:
+                                facePos[i] = facePos[i]*(1600/imgWidth)
+                            else:
+                                facePos[i] = facePos[i]*(900/imgHeight)
+
+
                         eyeFileWriter.writerow(np.concatenate((clmLeftEye, clmRightEye)).flatten())
                         faceFileWriter.writerow(facePos)
                         webgazerFileWriter.writerow([webgazerX, webgazerY])
