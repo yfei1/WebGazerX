@@ -66,7 +66,7 @@ class NN(nn.Module):
         ey = nn.ReLU()(self.ey_w1(ey))
         ey = self.dropout4(ey)        
         
-        fc = self.fc_norm1(fc)
+        #fc = self.fc_norm1(fc)
         fc = nn.ReLU()(self.fc_w1(fc))
         fc = self.dropout5(fc)
 
@@ -88,7 +88,7 @@ def test_acc(ey, fc, gt, wg, model):
         batch_fc = fc[it:it+batch_size]
         batch_gt = gt[it:it+batch_size]
         batch_wg = wg[it:it+batch_size]
-        
+
         total_benchmark_loss = total_benchmark_loss + error(batch_gt, batch_wg, batch_size)
         batch_ey = Variable(torch.FloatTensor(batch_ey)).cuda()
         batch_fc = Variable(torch.FloatTensor(batch_fc)).cuda()
@@ -99,16 +99,16 @@ def test_acc(ey, fc, gt, wg, model):
 
     model.train(True)
     return total_loss/(len(ey) - len(ey)%batch_size), total_benchmark_loss/(len(ey) - len(ey)%batch_size)
-    
+
 def error(gt, wg, batch_size):
     assert(len(gt) == len(wg))
     assert(len(gt[0]) == len(wg[0]))
-    
+
     gt = np.array(gt)
     wg = np.array(wg)
 
     return pow((gt-wg), 2).sum()
-        
+
 
 
 batch_size = 20
@@ -158,7 +158,7 @@ print("Testing Data %d" % len(testFcData))
 
 start_time = time.time()
 
-for epoch_num in range(100):
+for epoch_num in range(120):
     training_err = 0
     for it in range(0, len(trainData)-len(trainData)%batch_size, batch_size):
         batchData = list(zip(*trainData[it:it+batch_size]))
@@ -166,7 +166,7 @@ for epoch_num in range(100):
         fc_batch = list(batchData[1])
         gt_batch = list(batchData[2]) # ground truth batch
         wg_batch = list(batchData[3])
-    
+
         gt_batch = Variable(torch.FloatTensor(gt_batch)).cuda()
         fc_batch = Variable(torch.FloatTensor(fc_batch)).cuda()
         ey_batch = Variable(torch.FloatTensor(ey_batch)).cuda()
@@ -190,7 +190,7 @@ for epoch_num in range(100):
     print("Training Err: %2.3f" % (training_err/(len(trainData)-len(trainData)%batch_size)) )
     if best_err_so_far > err:
         best_err_so_far = err
-        torch.save(model.state_dict(), "model")    
+        torch.save(model.state_dict(), "model")
 
 print("Training took %f seconds" % (time.time()-start_time))
 print("Best Validation Error so far: %2.3f" % best_err_so_far)

@@ -87,6 +87,7 @@ for levelOneDir in levelOneViewList:
                     frameTimestamp = row[1]
                     
                     img = cv2.imread(frameFilename, cv2.IMREAD_GRAYSCALE)
+                    imgHeight, imgWidth = img.shape
                     facePos = list()
 
                     # Tobii has been calibrated such that 0,0 is top left and 1,1 is bottom right
@@ -94,14 +95,14 @@ for levelOneDir in levelOneViewList:
                     tobiiLeftEyeGazeY  = float(row[3])
                     tobiiRightEyeGazeX = float(row[4])
                     tobiiRightEyeGazeY = float(row[5])
-                    
+
                     webgazerX = float(row[6])
                     webgazerY = float(row[7])
-                    
+
                     clmTracker = row[8:len(row)-1]
                     clmTracker = [float(i) for i in clmTracker]
                     clmTracker = [int(i)   for i in clmTracker]
-                    
+
                     clmLeftEye, clmRightEye = getEyeRegion(clmTracker)
 
                     if len(clmLeftEye) == 0 or len(clmRightEye) == 0:
@@ -122,13 +123,13 @@ for levelOneDir in levelOneViewList:
 
                         # Jaw
                         facePos.extend(clmTracker[0:30])
-                
+
                         # Upper lip
                         facePos.extend(clmTracker[88:102])
 
                         # Lower lip
                         facePos.extend(clmTracker[102:112])
-                        
+
                         # Eye position
                         facePos.extend(clmTracker[126:142])
 
@@ -144,6 +145,13 @@ for levelOneDir in levelOneViewList:
                         #cv2.waitKey(0)
                         #print("Duila!")
                         # len of facePos is 76
+                        for i in range(len(facePos)):
+                            if i % 2 == 0:
+                                facePos[i] = facePos[i]*(1600/imgWidth)
+                            else:
+                                facePos[i] = facePos[i]*(900/imgHeight)
+
+
                         eyeFileWriter.writerow(np.concatenate((clmLeftEye, clmRightEye)).flatten())
                         faceFileWriter.writerow(facePos)
                         webgazerFileWriter.writerow([webgazerX, webgazerY])
