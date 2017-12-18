@@ -1,29 +1,29 @@
 import random
 import csv
-import matplotlib
-import matplotlib.pyplot as plt
 import csv
 import numpy as np
 
 
 cutoff=50
+
+dir_name = ['./cutoff50/', './cutoff390/', './cutoff1000/', './cutoff_na/']
 #read in gaze coordinate and scale by *100
 data=np.loadtxt(open('tobiigazerDataShuffle.csv', 'r'), delimiter=",")
 data=data*100
 
 #find max value of coordinate for x and y
-x_max=np.max(data[range(0,data.shape[0]),0])#return 115
-y_max=np.max(data[range(0,data.shape[0]),1])#return 173
-x=data[range(0,data.shape[0]),0]
-y=data[range(0,data.shape[0]),1]
+x_max=np.max(data[list(range(0,data.shape[0])),0])#return 115
+y_max=np.max(data[list(range(0,data.shape[0])),1])#return 173
+x=data[list(range(0,data.shape[0])),0]
+y=data[list(range(0,data.shape[0])),1]
 
 #for heatmap
 bins=np.zeros(shape=(12,18))
 
 #save the bin label for each gaze
 mydict=np.zeros(len(x), dtype=int)
-for i in xrange(0,12):
-	for j in xrange(0,18):
+for i in range(0,12):
+	for j in range(0,18):
  		interval_x_l=10*i
  		interval_x_r=10*(i+1)
  		interval_y_l=10*j
@@ -62,22 +62,23 @@ myrows=np.where(myindex==1)[0]
 
 
 new_data=data[myrows]/100
-np.savetxt("SampledtobiigazerShuffleData.csv", new_data, delimiter=",")
+np.savetxt(dir_name[0] + "SampledtobiigazerDataShuffle.csv", new_data, delimiter=",")
 #print how many data you are using
-print(len(myrows))
+print((len(myrows)))
 
 
 data1=np.loadtxt(open('eyeDataShuffle.csv', 'r'), delimiter=",")
 newdata1=data1[myrows]
-np.savetxt("SampledeyeData.csv", data1, delimiter=",")
+print(len(newdata1))
+np.savetxt(dir_name[0] + "SampledeyeDataShuffle.csv", newdata1, delimiter=",")
 
 data1=np.loadtxt(open('faceDataShuffle.csv', 'r'), delimiter=",")
 newdata1=data1[myrows]
-np.savetxt("SampledfaceShuffleData.csv", data1, delimiter=",")
-
-
+print(len(newdata1))
+np.savetxt(dir_name[0] + "SampledfaceDataShuffle.csv", newdata1, delimiter=",")
 
 data1=np.loadtxt(open('webgazerDataShuffle.csv', 'r'), delimiter=",")
 newdata1=data1[myrows]
-np.savetxt("SampledwebgazeShuffleData.csv", data1, delimiter=",")
+print(len(newdata1))
+np.savetxt(dir_name[0] + "SampledwebgazeDataShuffle.csv", newdata1, delimiter=",")
 

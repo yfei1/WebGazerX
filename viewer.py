@@ -110,10 +110,13 @@ def clamp(img, lowerBound, upperBound):
 
 useDlibTracker = True
 
-eyeFile = open('eyeData.csv', 'w')
-faceFile = open('faceData.csv', 'w')
-webgazerFile = open('webgazerData.csv', 'w')
-tobiigazerFile = open('tobiigazerData.csv', 'w')
+detector = dlib.get_frontal_face_detector()
+predictor = dlib.shape_predictor('./dlib-models/shape_predictor_68_face_landmarks.dat')
+
+eyeFile = open('eyeDataD.csv', 'w')
+faceFile = open('faceDataD.csv', 'w')
+webgazerFile = open('webgazerDataD.csv', 'w')
+tobiigazerFile = open('tobiigazerDataD.csv', 'w')
 
 eyeFileWriter = csv.writer(eyeFile, delimiter=',')
 faceFileWriter = csv.writer(faceFile, delimiter=',')
@@ -155,12 +158,14 @@ for levelOneDir in levelOneViewList:
                     tobiiRightEyeGazeX = float(row[4])
                     tobiiRightEyeGazeY = float(row[5])
 
+                    tobiiEyeGazeX = (tobiiLeftEyeGazeX + tobiiRightEyeGazeX) / 2
+                    tobiiEyeGazeY = (tobiiLeftEyeGazeY + tobiiRightEyeGazeY) / 2
+
+
                     webgazerX = float(row[6])
                     webgazerY = float(row[7])
 
-                    if useDlibTracker:
-                        detector = dlib.get_frontal_face_detector()
-                        predictor = dlib.shape_predictor('.\dlib-models\shape_predictor_68_face_landmarks.dat')
+                    if useDlibTracker:                       
                         gray = img
                         faces = detector(gray, 1)
                         if len(faces) == 0:
@@ -221,9 +226,7 @@ for levelOneDir in levelOneViewList:
                                 validEye(mLeft , np.mean(perPersonMeanLeft) , 1.5*np.std(perPersonMeanLeft) ) and \
                                 validEye(mRight, np.mean(perPersonMeanRight), 1.5*np.std(perPersonMeanRight)) and \
                                 np.absolute(dist - np.mean(accImgDistMean)) < 1.5*np.std(accImgDistMean): #TODO: Detect if blinking or not
-                            tobiiEyeGazeX = (tobiiLeftEyeGazeX + tobiiRightEyeGazeX) / 2
-                            tobiiEyeGazeY = (tobiiLeftEyeGazeY + tobiiRightEyeGazeY) / 2
-
+                            
                             # Jaw
                             facePos.extend(clmTracker[0:30])
 
